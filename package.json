@@ -1,5 +1,6 @@
 {
-  "name": "killer-sudoku",
+  "name": "@jimqpham/killer-sudoku-angular",
+  "repository": "https://github.com/jimqpham/killer-sudoku-angular",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
