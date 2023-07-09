@@ -1,7 +1,7 @@
 {
   "name": "@jimqpham/killer-sudoku-angular",
   "repository": "https://github.com/jimqpham/killer-sudoku-angular",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
