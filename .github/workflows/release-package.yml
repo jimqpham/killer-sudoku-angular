@@ -18,7 +18,7 @@ jobs:
           node-version: 16
       - run: npm install
       - run: npm run build
-      - run: npm version minor
+      - run: npm --no-git-tag-version version minor
 
   publish-gpr:
     needs: build
