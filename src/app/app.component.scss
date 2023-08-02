@@ -1,0 +1,11 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 70px) [col-divider-1] repeat(3, 70px) [col-divider-2] repeat(
+      3,
+      70px
+    );
+  grid-template-rows: repeat(3, 70px) [row-divider-1] repeat(3, 70px) [row-divider-2] repeat(
+      3,
+      70px
+    );
+}
