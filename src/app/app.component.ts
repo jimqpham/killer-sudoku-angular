@@ -13,14 +13,5 @@ import { DrawingService } from './drawing.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  indices = Array(81).map((_, idx) => idx);
-  gridSize = `${
-    this._drawingService.CONFIG.cellSize * 9 +
-    this._drawingService.CONFIG.padding * 8
-  }px`;
-  padding = `${this._drawingService.CONFIG.padding}px`;
-
-  constructor(private readonly _drawingService: DrawingService) {
-    console.log(this.gridSize);
-  }
+  subgridIdx = Array(9).map((_, idx) => idx)
 }

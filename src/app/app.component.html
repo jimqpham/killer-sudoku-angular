@@ -1,6 +1,3 @@
-<div class="grid" [ngStyle]="{ width: gridSize, height: gridSize }">
-  <app-cell
-    *ngFor="let idx of indices"
-    [ngStyle]="{padding, width: '50px'}"
-  ></app-cell>
-</div>
+<ng-container class="grid">
+  <app-subgrid *ngFor="let i of subgridIdx"></app-subgrid>
+</ng-container>
