@@ -4,8 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class DrawingService {
-  constructor() {}
-
   CONFIG = {
     cellSize: 70,
     containerSize: 70,
