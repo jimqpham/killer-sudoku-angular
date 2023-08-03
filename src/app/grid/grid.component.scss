@@ -1,0 +1,22 @@
+:host {
+  display: grid;
+  width: min-content;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.subgrid {
+  padding: 6px;
+}
+
+@for $i from 1 through 2 {
+  .subgrid:nth-child(3n + #{$i}) {
+    border-right: 1px black solid;
+  }
+}
+
+@for $i from 1 through 6 {
+  .subgrid:nth-child(#{$i}) {
+    border-bottom: 1px black solid;
+  }
+}
