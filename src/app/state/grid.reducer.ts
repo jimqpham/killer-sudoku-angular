@@ -1,9 +1,12 @@
 import { createReducer } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import { PageLoadActions } from './grid.actions';
-import { Digit } from './grid.models';
+import { Digit, GridState } from './grid.models';
 
-const initialGridState = { solution: [1, 2, 3] as Digit[] };
+const initialGridState: GridState = {
+  solution: [] as Digit[],
+  areas: [] as string[],
+};
 
 export const gridReducer = createReducer(
   initialGridState,

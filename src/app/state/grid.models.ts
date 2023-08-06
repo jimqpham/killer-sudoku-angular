@@ -3,6 +3,7 @@ export type OptionalDigit = Digit | undefined;
 
 export type GridState = {
   solution: Digit[];
+  areas: string[];
 };
 
 export type AppState = {
