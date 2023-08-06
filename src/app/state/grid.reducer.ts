@@ -5,14 +5,13 @@ import { Digit, GridState } from './grid.models';
 
 const initialGridState: GridState = {
   solution: [] as Digit[],
-  areas: Array(9)
-    .fill(null)
-    .flatMap(() => ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']),
+  areas: [] as string[],
 };
 
 export const gridReducer = createReducer(
   initialGridState,
   immerOn(PageLoadActions.fetchDataSuccess, (state, action) => {
-    state.solution = action.payload;
+    state.solution = action.payload.solution;
+    state.areas = action.payload.areas;
   })
 );

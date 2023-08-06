@@ -1,7 +1,7 @@
 :root {
   // If changing cell size, remember to change the cell size in the config.ts file as well
-  --cell-size: 80px;
-  --inner-cell-size: 70px;
+  --inner-cell-size: 60px;
   --cell-rounded-border: 8px;
-  --cell-padding: 5px;
+  --cell-padding: 10px;
+  --cell-size: calc(var(--inner-cell-size) + 2 * var(--cell-padding));
 }

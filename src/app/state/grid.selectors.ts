@@ -25,9 +25,17 @@ export const selectBridgesForCellIdx = (cellIdx: number) =>
     const cellRightIdx = cellIdx % 9 === 8 ? undefined : cellIdx + 1;
 
     return {
-      up: Boolean(cellAboveIdx && areas[cellAboveIdx] === areas[cellIdx]),
-      down: Boolean(cellBelowIdx && areas[cellBelowIdx] === areas[cellIdx]),
-      left: Boolean(cellLeftIdx && areas[cellLeftIdx] === areas[cellIdx]),
-      right: Boolean(cellRightIdx && areas[cellRightIdx] === areas[cellIdx]),
+      up: Boolean(
+        cellAboveIdx !== undefined && areas[cellAboveIdx] === areas[cellIdx]
+      ),
+      down: Boolean(
+        cellBelowIdx !== undefined && areas[cellBelowIdx] === areas[cellIdx]
+      ),
+      left: Boolean(
+        cellLeftIdx !== undefined && areas[cellLeftIdx] === areas[cellIdx]
+      ),
+      right: Boolean(
+        cellRightIdx !== undefined && areas[cellRightIdx] === areas[cellIdx]
+      ),
     };
   });

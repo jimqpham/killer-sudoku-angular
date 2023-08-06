@@ -15,7 +15,7 @@ export class GridEffects {
     this._actions$.pipe(
       ofType(PageLoadActions.fetchData),
       switchMap(() =>
-        this._gridService.solution$.pipe(
+        this._gridService.board$.pipe(
           map((solution) =>
             PageLoadActions.fetchDataSuccess({ payload: solution })
           )

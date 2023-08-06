@@ -4,7 +4,14 @@
   align-items: center;
 }
 
+.text-format {
+  font-family: Raleway, Helvetica, sans-serif;
+  font-size: x-large;
+  font-weight: bolder;
+}
+
 .cell-container {
+  @extend .text-format;
   height: var(--cell-size);
   width: var(--cell-size);
   display: flex;
