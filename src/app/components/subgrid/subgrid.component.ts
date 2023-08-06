@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DrawingService } from '../drawing.service';
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from 'rxjs';
+import { DrawingService } from 'src/app/drawing.service';
 
 @Component({
   selector: 'app-subgrid',

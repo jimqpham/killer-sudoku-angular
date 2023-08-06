@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { DrawingService } from '../drawing.service';
+import { DrawingService } from '../../drawing.service';
 import { Store } from '@ngrx/store';
-import { PageLoadActions } from '../state/grid.actions';
+import { PageLoadActions } from '../../state/grid.actions';
 
 @Component({
   selector: 'app-grid',

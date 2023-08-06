@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { DrawingService } from '../drawing.service';
 import {
   BehaviorSubject,
   Observable,
@@ -7,7 +6,8 @@ import {
   switchMap,
 } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectSolutionForCellIdx } from '../state/grid.selectors';
+import { DrawingService } from 'src/app/drawing.service';
+import { selectSolutionForCellIdx } from 'src/app/state/grid.selectors';
 
 @Component({
   selector: 'app-cell',
