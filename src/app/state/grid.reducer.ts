@@ -5,7 +5,9 @@ import { Digit, GridState } from './grid.models';
 
 const initialGridState: GridState = {
   solution: [] as Digit[],
-  areas: [] as string[],
+  areas: Array(9)
+    .fill(null)
+    .flatMap(() => ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']),
 };
 
 export const gridReducer = createReducer(

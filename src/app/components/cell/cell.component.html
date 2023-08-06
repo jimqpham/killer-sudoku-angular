@@ -11,6 +11,7 @@
 
     <!-- Top bridge -->
     <rect
+      *ngIf="(bridges$ | async)?.up"
       [attr.height]="cellPadding"
       [attr.width]="bridgeWidth"
       [attr.x]="cellPadding + (innerCellSize - bridgeWidth) / 2"
@@ -19,6 +20,7 @@
 
     <!-- Bottom bridge -->
     <rect
+      *ngIf="(bridges$ | async)?.down"
       [attr.height]="cellPadding"
       [attr.width]="bridgeWidth"
       [attr.x]="cellPadding + (innerCellSize - bridgeWidth) / 2"
@@ -27,6 +29,7 @@
 
     <!-- Left bridge -->
     <rect
+      *ngIf="(bridges$ | async)?.left"
       [attr.height]="bridgeWidth"
       [attr.width]="cellPadding"
       [attr.x]="0"
@@ -35,6 +38,7 @@
 
     <!-- Right bridge -->
     <rect
+      *ngIf="(bridges$ | async)?.right"
       [attr.height]="bridgeWidth"
       [attr.width]="cellPadding"
       [attr.x]="cellPadding + innerCellSize"
