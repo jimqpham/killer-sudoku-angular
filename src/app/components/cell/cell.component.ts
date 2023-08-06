@@ -11,7 +11,12 @@ import {
   selectSolutionForCellIdx,
 } from 'src/app/state/grid.selectors';
 import { CellBridges } from 'src/app/types/types';
-import { INNER_CELL_SIZE } from 'src/app/utils/config';
+import {
+  BRIDGE_WIDTH,
+  CELL_PADDING,
+  CELL_SIZE,
+  INNER_CELL_SIZE,
+} from 'src/app/utils/config';
 
 @Component({
   selector: 'app-cell',
@@ -30,6 +35,9 @@ export class CellComponent {
   solution$: Observable<number>;
   bridges$: Observable<CellBridges>;
   innerCellSize = INNER_CELL_SIZE;
+  cellPadding = CELL_PADDING;
+  bridgeWidth = BRIDGE_WIDTH;
+  cellSize = CELL_SIZE;
 
   constructor(private readonly _store: Store) {
     this.solution$ = this.cellIdx$.pipe(

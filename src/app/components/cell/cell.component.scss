@@ -14,12 +14,8 @@
   & svg {
     position: absolute;
     z-index: -1;
-    margin: var(--cell-padding);
-    width: var(--inner-cell-size);
-    height: var(--inner-cell-size);
-
-    .grid-cell {
-      fill: #9caf88;
-    }
+    width: var(--cell-size);
+    height: var(--cell-size);
+    fill: #9caf88;
   }
 }

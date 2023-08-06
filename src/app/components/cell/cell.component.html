@@ -3,9 +3,43 @@
     <rect
       [attr.height]="innerCellSize"
       [attr.width]="innerCellSize"
+      [attr.x]="cellPadding"
+      [attr.y]="cellPadding"
       class="grid-cell"
       [attr.rx]="8"
     />
+
+    <!-- Top bridge -->
+    <rect
+      [attr.height]="cellPadding"
+      [attr.width]="bridgeWidth"
+      [attr.x]="cellPadding + (innerCellSize - bridgeWidth) / 2"
+      [attr.y]="0"
+    ></rect>
+
+    <!-- Bottom bridge -->
+    <rect
+      [attr.height]="cellPadding"
+      [attr.width]="bridgeWidth"
+      [attr.x]="cellPadding + (innerCellSize - bridgeWidth) / 2"
+      [attr.y]="cellPadding + innerCellSize"
+    ></rect>
+
+    <!-- Left bridge -->
+    <rect
+      [attr.height]="bridgeWidth"
+      [attr.width]="cellPadding"
+      [attr.x]="0"
+      [attr.y]="cellPadding + (innerCellSize - bridgeWidth) / 2"
+    ></rect>
+
+    <!-- Right bridge -->
+    <rect
+      [attr.height]="bridgeWidth"
+      [attr.width]="cellPadding"
+      [attr.x]="cellPadding + innerCellSize"
+      [attr.y]="cellPadding + (innerCellSize - bridgeWidth) / 2"
+    ></rect>
   </svg>
   <span class="cell-value">{{ solution$ | async }}</span>
 </div>
