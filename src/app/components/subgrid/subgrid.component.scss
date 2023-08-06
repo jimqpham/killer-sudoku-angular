@@ -1,6 +1,10 @@
 .subgrid {
   display: grid;
-  grid-template-columns: repeat(3, 70px);
-  grid-template-rows: repeat(3, 70px);
-  gap: 5px;
+  grid-template-columns: repeat(3, var(--cell-size));
+  grid-template-rows: repeat(3, var(--cell-size));
+}
+
+app-cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
 }

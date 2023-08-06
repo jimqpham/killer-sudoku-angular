@@ -6,7 +6,8 @@
 }
 
 .subgrid {
-  padding: 6px;
+  width: calc(3 * var(--cell-size));
+  height: calc(3 * var(--cell-size));
 }
 
 @for $i from 1 through 2 {

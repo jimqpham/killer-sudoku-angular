@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from 'rxjs';
-import { DrawingService } from 'src/app/drawing.service';
 
 @Component({
   selector: 'app-subgrid',
@@ -12,7 +11,6 @@ export class SubgridComponent {
   relativeCellIdx = Array(9)
     .fill(0)
     .map((_, idx) => idx);
-  containerSize = this._drawingService.CONFIG.containerSize;
 
   subgridIdxSubject$ = new BehaviorSubject<number>(0);
   subgridIdx$ = this.subgridIdxSubject$.asObservable();
@@ -22,7 +20,7 @@ export class SubgridComponent {
   }
   absoluteCellIndices$: Observable<number[]>;
 
-  constructor(private readonly _drawingService: DrawingService) {
+  constructor() {
     this.absoluteCellIndices$ = this.subgridIdx$.pipe(
       distinctUntilChanged(),
       map((subgridIdx) =>

@@ -4,11 +4,22 @@
   align-items: center;
 }
 
-.grid-cell {
-  fill: #9caf88;
-}
+.cell-container {
+  height: var(--cell-size);
+  width: var(--cell-size);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-.cell-value {
-  position: absolute;
-  margin: auto;
+  & svg {
+    position: absolute;
+    z-index: -1;
+    margin: var(--cell-padding);
+    width: var(--inner-cell-size);
+    height: var(--inner-cell-size);
+
+    .grid-cell {
+      fill: #9caf88;
+    }
+  }
 }

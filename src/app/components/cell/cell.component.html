@@ -1,9 +1,11 @@
-<span class="cell-value">{{ solution$ | async }}</span>
-<svg [attr.height]="containerSize" [attr.width]="containerSize">
-  <rect
-    [attr.height]="cellSize"
-    [attr.width]="cellSize"
-    class="grid-cell"
-    [attr.rx]="roundedBorder"
-  />
-</svg>
+<div class="cell-container">
+  <svg>
+    <rect
+      [attr.height]="innerCellSize"
+      [attr.width]="innerCellSize"
+      class="grid-cell"
+      [attr.rx]="8"
+    />
+  </svg>
+  <span class="cell-value">{{ solution$ | async }}</span>
+</div>

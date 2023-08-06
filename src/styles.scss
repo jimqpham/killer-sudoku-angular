@@ -1,1 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  // If changing cell size, remember to change the cell size in the config.ts file as well
+  --cell-size: 80px;
+  --inner-cell-size: 70px;
+  --cell-rounded-border: 8px;
+  --cell-padding: 5px;
+}
