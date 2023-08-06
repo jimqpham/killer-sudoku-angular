@@ -1,14 +1,42 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { DrawingService } from '../drawing.service';
+import { BehaviorSubject, Observable, distinctUntilChanged, map } from 'rxjs';
 
 @Component({
   selector: 'app-subgrid',
   templateUrl: './subgrid.component.html',
   styleUrls: ['./subgrid.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubgridComponent {
-  indices = Array(9).map((_, idx) => idx);
+  relativeCellIdx = Array(9)
+    .fill(0)
+    .map((_, idx) => idx);
   containerSize = this._drawingService.CONFIG.containerSize;
 
-  constructor(private readonly _drawingService: DrawingService) {}
+  subgridIdxSubject$ = new BehaviorSubject<number>(0);
+  subgridIdx$ = this.subgridIdxSubject$.asObservable();
+  @Input()
+  set subgridIdx(idx: number) {
+    this.subgridIdxSubject$.next(idx);
+  }
+  absoluteCellIndices$: Observable<number[]>;
+
+  constructor(private readonly _drawingService: DrawingService) {
+    this.absoluteCellIndices$ = this.subgridIdx$.pipe(
+      distinctUntilChanged(),
+      map((subgridIdx) =>
+        this.relativeCellIdx.map((relativeCellIdx) =>
+          this.getAbsoluteCellIdx(subgridIdx, relativeCellIdx)
+        )
+      )
+    );
+  }
+
+  getAbsoluteCellIdx(subgridIdx: number, relativeCellIdx: number) {
+    const cellRowIdx =
+      Math.floor(subgridIdx / 3) * 3 + Math.floor(relativeCellIdx / 3);
+    const cellColIdx = (subgridIdx % 3) * 3 + (relativeCellIdx % 3);
+    return cellRowIdx * 9 + cellColIdx;
+  }
 }

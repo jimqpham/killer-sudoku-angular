@@ -3,8 +3,8 @@ import { Observable, of } from 'rxjs';
 import { Digit } from './state/grid.models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GridService {
-  solution$: Observable<Digit[]> = of([1, 2, 3, 4])
+  solution$: Observable<Digit[]> = of(Array(81).fill(0));
 }
