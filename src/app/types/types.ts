@@ -4,3 +4,9 @@ export type CellBridges = {
   left: boolean;
   right: boolean;
 };
+
+export type AreaProps = {
+  areaId: string;
+  topLeftCellIdx: number;
+  sum: number;
+};

@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { GridState } from './grid.models';
-import { CellBridges } from '../types/types';
+import { AreaProps, CellBridges } from '../types/types';
 
 const selectGrid = createFeatureSelector<GridState>('grid');
 
@@ -39,3 +39,36 @@ export const selectBridgesForCellIdx = (cellIdx: number) =>
       ),
     };
   });
+
+export const selectAreaProps = createSelector(
+  selectAreas,
+  selectSolution,
+  function (areas, solution): AreaProps[] {
+    let areaPropsList = [] as AreaProps[];
+
+    areas.forEach((currentArea, currentIdx) => {
+      const areaPropsListItem = areaPropsList.find(
+        (areaItem) => areaItem.areaId === currentArea
+      );
+
+      if (areaPropsListItem === undefined)
+        areaPropsList = [
+          ...areaPropsList,
+          {
+            areaId: currentArea,
+            sum: solution[currentIdx],
+            topLeftCellIdx: currentIdx,
+          },
+        ];
+      else {
+        areaPropsListItem.sum += solution[currentIdx];
+        areaPropsListItem.topLeftCellIdx =
+          areaPropsListItem.topLeftCellIdx < currentIdx
+            ? areaPropsListItem.topLeftCellIdx
+            : currentIdx;
+      }
+    });
+
+    return areaPropsList;
+  }
+);
