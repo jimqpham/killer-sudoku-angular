@@ -45,5 +45,8 @@
       [attr.y]="cellPadding + (innerCellSize - bridgeWidth) / 2"
     ></rect>
   </svg>
-  <span class="cell-value">{{ solution$ | async }}</span>
+  <div class="area-sum" *ngIf="displayAreaSum$ | async as areaSum">
+    {{ areaSum }}
+  </div>
+  <div class="cell-value">{{ solution$ | async }}</div>
 </div>

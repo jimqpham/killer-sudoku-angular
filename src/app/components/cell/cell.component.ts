@@ -8,6 +8,7 @@ import {
 import { Store } from '@ngrx/store';
 import {
   selectBridgesForCellIdx,
+  selectAreaSumAtCellIdx,
   selectSolutionForCellIdx,
 } from 'src/app/state/grid.selectors';
 import { CellBridges } from 'src/app/types/types';
@@ -26,7 +27,7 @@ import {
 })
 export class CellComponent {
   cellIdxSubject$ = new BehaviorSubject<number>(0);
-  cellIdx$ = this.cellIdxSubject$.asObservable();
+  cellIdx$ = this.cellIdxSubject$.asObservable().pipe(distinctUntilChanged());
   @Input()
   set cellIdx(idx: number) {
     this.cellIdxSubject$.next(idx);
@@ -34,6 +35,7 @@ export class CellComponent {
 
   solution$: Observable<number>;
   bridges$: Observable<CellBridges>;
+  displayAreaSum$: Observable<number | undefined>;
   innerCellSize = INNER_CELL_SIZE;
   cellPadding = CELL_PADDING;
   bridgeWidth = BRIDGE_WIDTH;
@@ -41,12 +43,13 @@ export class CellComponent {
 
   constructor(private readonly _store: Store) {
     this.solution$ = this.cellIdx$.pipe(
-      distinctUntilChanged(),
       switchMap((cellIdx) => _store.select(selectSolutionForCellIdx(cellIdx)))
     );
     this.bridges$ = this.cellIdx$.pipe(
-      distinctUntilChanged(),
       switchMap((cellIdx) => _store.select(selectBridgesForCellIdx(cellIdx)))
+    );
+    this.displayAreaSum$ = this.cellIdx$.pipe(
+      switchMap((cellIdx) => _store.select(selectAreaSumAtCellIdx(cellIdx)))
     );
   }
 }

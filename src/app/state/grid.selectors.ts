@@ -62,13 +62,21 @@ export const selectAreaProps = createSelector(
         ];
       else {
         areaPropsListItem.sum += solution[currentIdx];
-        areaPropsListItem.topLeftCellIdx =
-          areaPropsListItem.topLeftCellIdx < currentIdx
-            ? areaPropsListItem.topLeftCellIdx
-            : currentIdx;
       }
     });
 
     return areaPropsList;
   }
 );
+
+export const selectAreaSumAtCellIdx = (cellIdx: number) =>
+  createSelector(
+    selectAreas,
+    selectAreaProps,
+    (areas, areaPropsList) =>
+      areaPropsList.find(
+        (areaProps) =>
+          areaProps.areaId === areas[cellIdx] &&
+          areaProps.topLeftCellIdx === cellIdx
+      )?.sum
+  );
