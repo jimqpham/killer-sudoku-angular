@@ -4,21 +4,31 @@ import { AreaProps, CellBridges } from '../types/types';
 
 const selectGrid = createFeatureSelector<GridState>('grid');
 
-export const selectSolution = createSelector(
+const selectSolutionMemoized = createSelector(
   selectGrid,
   (grid) => grid.solution
 );
 
-export const selectAreas = createSelector(selectGrid, (grid) => grid.areas);
+const selectAreasMemoized = createSelector(selectGrid, (grid) => grid.areas);
+
+const selectActiveAreaIdMemoized = createSelector(
+  selectGrid,
+  (grid) => grid.activeArea
+);
+
+export const selectActiveAreaId = createSelector(
+  selectActiveAreaIdMemoized,
+  (activeArea) => activeArea
+);
 
 export const selectSolutionForCellIdx = (cellIdx: number) =>
-  createSelector(selectSolution, (solution) => solution[cellIdx] || 0);
+  createSelector(selectSolutionMemoized, (solution) => solution[cellIdx] || 0);
 
 export const selectAreaIdForCellIdx = (cellIdx: number) =>
-  createSelector(selectAreas, (area) => area[cellIdx] || '');
+  createSelector(selectAreasMemoized, (area) => area[cellIdx] || '');
 
 export const selectBridgesForCellIdx = (cellIdx: number) =>
-  createSelector(selectAreas, function (areas): CellBridges {
+  createSelector(selectAreasMemoized, function (areas): CellBridges {
     const cellAboveIdx = cellIdx - 9 >= 0 ? cellIdx - 9 : undefined;
     const cellBelowIdx = cellIdx + 9 <= 80 ? cellIdx + 9 : undefined;
     const cellLeftIdx = cellIdx % 9 === 0 ? undefined : cellIdx - 1;
@@ -41,8 +51,8 @@ export const selectBridgesForCellIdx = (cellIdx: number) =>
   });
 
 export const selectAreaProps = createSelector(
-  selectAreas,
-  selectSolution,
+  selectAreasMemoized,
+  selectSolutionMemoized,
   function (areas, solution): AreaProps[] {
     let areaPropsList = [] as AreaProps[];
 
@@ -71,7 +81,7 @@ export const selectAreaProps = createSelector(
 
 export const selectAreaSumAtCellIdx = (cellIdx: number) =>
   createSelector(
-    selectAreas,
+    selectAreasMemoized,
     selectAreaProps,
     (areas, areaPropsList) =>
       areaPropsList.find(

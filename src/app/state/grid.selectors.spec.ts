@@ -3,7 +3,6 @@ import { AppState } from './grid.models';
 import {
   selectAreaIdForCellIdx,
   selectAreaProps,
-  selectAreas,
   selectBridgesForCellIdx,
   selectAreaSumAtCellIdx,
   selectSolutionForCellIdx,
@@ -47,20 +46,6 @@ describe('Grid Selectors', () => {
 
       // Assert
       expect(actualSolutionValue).toEqual(expectedSolutionValue);
-    });
-  });
-
-  describe('selectAreas', () => {
-    it('should return the area map', () => {
-      // Arrange
-      const appState = { grid: { areas: ['a', 'b', 'c'] } } as AppState;
-      const expectedAreas = ['a', 'b', 'c'];
-
-      // Act
-      const actualAreas = selectAreas(appState);
-
-      // Arrange
-      expect(actualAreas).toEqual(expectedAreas);
     });
   });
 

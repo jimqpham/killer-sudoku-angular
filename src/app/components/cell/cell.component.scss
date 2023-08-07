@@ -22,6 +22,12 @@
     fill: #9caf88;
   }
 
+  &__active {
+    svg {
+      fill: aqua;
+    }
+  }
+
   .area-sum {
     font-size: small;
     font-weight: bolder;

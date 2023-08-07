@@ -1,15 +1,27 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnDestroy,
+} from '@angular/core';
 import {
   BehaviorSubject,
   Observable,
+  Subject,
+  combineLatest,
   distinctUntilChanged,
+  map,
   switchMap,
+  takeUntil,
+  withLatestFrom,
 } from 'rxjs';
 import { Store } from '@ngrx/store';
 import {
   selectBridgesForCellIdx,
   selectAreaSumAtCellIdx,
   selectSolutionForCellIdx,
+  selectAreaIdForCellIdx,
+  selectActiveAreaId,
 } from 'src/app/state/grid.selectors';
 import { CellBridges } from 'src/app/types/types';
 import {
@@ -18,6 +30,7 @@ import {
   CELL_SIZE,
   INNER_CELL_SIZE,
 } from 'src/app/utils/config';
+import { setActiveArea, unsetActiveArea } from 'src/app/state/grid.actions';
 
 @Component({
   selector: 'app-cell',
@@ -25,7 +38,7 @@ import {
   styleUrls: ['./cell.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CellComponent {
+export class CellComponent implements OnDestroy {
   cellIdxSubject$ = new BehaviorSubject<number>(0);
   cellIdx$ = this.cellIdxSubject$.asObservable().pipe(distinctUntilChanged());
   @Input()
@@ -36,6 +49,11 @@ export class CellComponent {
   solution$: Observable<number>;
   bridges$: Observable<CellBridges>;
   displayAreaSum$: Observable<number | undefined>;
+  areaId$: Observable<string>;
+  isMouseOverSubject$ = new BehaviorSubject(false);
+  isActiveArea$: Observable<boolean>;
+  destroy$ = new Subject<void>();
+
   innerCellSize = INNER_CELL_SIZE;
   cellPadding = CELL_PADDING;
   bridgeWidth = BRIDGE_WIDTH;
@@ -51,5 +69,30 @@ export class CellComponent {
     this.displayAreaSum$ = this.cellIdx$.pipe(
       switchMap((cellIdx) => _store.select(selectAreaSumAtCellIdx(cellIdx)))
     );
+    this.areaId$ = this.cellIdx$.pipe(
+      switchMap((cellIdx) => _store.select(selectAreaIdForCellIdx(cellIdx)))
+    );
+    this.isMouseOverSubject$
+      .asObservable()
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged(),
+        withLatestFrom(this.areaId$)
+      )
+      .subscribe(([isMouseOver, areaId]) => {
+        if (isMouseOver) _store.dispatch(setActiveArea({ payload: areaId }));
+        else _store.dispatch(unsetActiveArea());
+      });
+    this.isActiveArea$ = combineLatest([
+      this.areaId$,
+      _store.select(selectActiveAreaId),
+    ]).pipe(
+      map(([currentAreaId, activeAreaId]) => currentAreaId === activeAreaId)
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,4 +1,11 @@
-<div class="cell-container">
+<div
+  [ngClass]="{
+    'cell-container': true,
+    'cell-container__active': isActiveArea$ | async
+  }"
+  (mouseenter)="isMouseOverSubject$.next(true)"
+  (mouseleave)="isMouseOverSubject$.next(false)"
+>
   <svg>
     <rect
       [attr.height]="innerCellSize"
