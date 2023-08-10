@@ -1,23 +1,24 @@
 :host {
   display: grid;
   width: min-content;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(9, var(--cell-size));
+  grid-template-rows: repeat(9, var(--cell-size));
 }
 
-.subgrid {
-  width: calc(3 * var(--cell-size));
-  height: calc(3 * var(--cell-size));
-}
-
-@for $i from 1 through 2 {
-  .subgrid:nth-child(3n + #{$i}) {
+@each $i in (3, 6) {
+  .cell:nth-child(9n + #{$i}) {
     border-right: 1px black solid;
   }
 }
 
-@for $i from 1 through 6 {
-  .subgrid:nth-child(#{$i}) {
+@for $i from 19 through 27 {
+  .cell:nth-child(81n + #{$i}) {
+    border-bottom: 1px black solid;
+  }
+}
+
+@for $i from 46 through 54 {
+  .cell:nth-child(81n + #{$i}) {
     border-bottom: 1px black solid;
   }
 }

@@ -11,10 +11,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { GridEffects } from './state/grid.effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CellComponent } from './components/cell/cell.component';
-import { SubgridComponent } from './components/subgrid/subgrid.component';
 
 @NgModule({
-  declarations: [AppComponent, CellComponent, SubgridComponent, GridComponent],
+  declarations: [AppComponent, CellComponent, GridComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

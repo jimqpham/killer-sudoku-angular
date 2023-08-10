@@ -9,7 +9,7 @@ import { PageLoadActions } from '../../state/grid.actions';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GridComponent implements OnInit {
-  subgridIdx = Array(9)
+  cellIndices = Array(81)
     .fill(0)
     .map((_, idx) => idx);
 
