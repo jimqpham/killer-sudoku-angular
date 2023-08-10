@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GridComponent } from './grid.component';
 import { provideMockStore } from '@ngrx/store/testing';
-import { SubgridComponent } from '../subgrid/subgrid.component';
 import { CellComponent } from '../cell/cell.component';
 
 describe('GridComponent', () => {
@@ -11,7 +10,7 @@ describe('GridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GridComponent, SubgridComponent, CellComponent],
+      declarations: [GridComponent, CellComponent],
       providers: [provideMockStore()],
     }).compileComponents();
 

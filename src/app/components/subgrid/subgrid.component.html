@@ -1,6 +1,0 @@
-<div class="subgrid">
-  <app-cell
-    *ngFor="let idx of relativeCellIdx"
-    [cellIdx]="(absoluteCellIndices$ | async)?.[idx] || 0"
-  ></app-cell>
-</div>
