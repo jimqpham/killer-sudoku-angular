@@ -16,6 +16,11 @@ const selectActiveAreaIdMemoized = createSelector(
   (grid) => grid.activeArea
 );
 
+const selectSelectedCellIdxMemoized = createSelector(
+  selectGrid,
+  (grid) => grid.selectedCellIdx
+);
+
 export const selectActiveAreaId = createSelector(
   selectActiveAreaIdMemoized,
   (activeArea) => activeArea
@@ -90,3 +95,8 @@ export const selectAreaSumAtCellIdx = (cellIdx: number) =>
           areaProps.topLeftCellIdx === cellIdx
       )?.sum
   );
+
+export const selectSelectedCellIdx = createSelector(
+  selectSelectedCellIdxMemoized,
+  (selectedCellIdx) => selectedCellIdx
+);

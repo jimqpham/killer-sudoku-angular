@@ -13,6 +13,7 @@ import {
   map,
   switchMap,
   takeUntil,
+  tap,
   withLatestFrom,
 } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -22,6 +23,7 @@ import {
   selectSolutionForCellIdx,
   selectAreaIdForCellIdx,
   selectActiveAreaId,
+  selectSelectedCellIdx,
 } from 'src/app/state/grid.selectors';
 import { CellBridges } from 'src/app/types/types';
 import {
@@ -30,7 +32,11 @@ import {
   CELL_SIZE,
   INNER_CELL_SIZE,
 } from 'src/app/utils/config';
-import { setActiveArea, unsetActiveArea } from 'src/app/state/grid.actions';
+import {
+  setActiveArea,
+  toggleSelectedCellIdx,
+  unsetActiveArea,
+} from 'src/app/state/grid.actions';
 
 @Component({
   selector: 'app-cell',
@@ -51,6 +57,9 @@ export class CellComponent implements OnDestroy {
   displayAreaSum$: Observable<number | undefined>;
   areaId$: Observable<string>;
   isMouseOverSubject$ = new BehaviorSubject(false);
+  isMouseOver$ = this.isMouseOverSubject$.asObservable();
+  mouseClickSubject$ = new Subject<void>();
+  isSelected$: Observable<boolean>;
   isActiveArea$: Observable<boolean>;
   destroy$ = new Subject<void>();
 
@@ -89,6 +98,23 @@ export class CellComponent implements OnDestroy {
     ]).pipe(
       map(([currentAreaId, activeAreaId]) => currentAreaId === activeAreaId)
     );
+    this.isSelected$ = combineLatest([
+      this.cellIdx$,
+      _store.select(selectSelectedCellIdx),
+    ]).pipe(map(([cellIdx, selectedCellIdx]) => cellIdx === selectedCellIdx));
+    this.mouseClickSubject$
+      .asObservable()
+      .pipe(
+        takeUntil(this.destroy$),
+        switchMap(() =>
+          this.cellIdx$.pipe(
+            tap((cellIdx) => {
+              _store.dispatch(toggleSelectedCellIdx({ payload: cellIdx }));
+            })
+          )
+        )
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {

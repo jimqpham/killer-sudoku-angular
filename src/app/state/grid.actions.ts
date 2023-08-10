@@ -7,7 +7,7 @@ import {
 import { Digit } from './grid.models';
 
 export const PageLoadActions = createActionGroup({
-  source: 'Page Load',
+  source: 'Grid - Page Load',
   events: {
     'Fetch Data': emptyProps(),
     'Fetch Data Success': props<{
@@ -18,10 +18,15 @@ export const PageLoadActions = createActionGroup({
 });
 
 export const setActiveArea = createAction(
-  '[Cursor Hover] Set Active Area',
+  '[Grid - Cursor Hover] Set Active Area',
   props<{ payload: string }>()
 );
 
 export const unsetActiveArea = createAction(
-  '[Cursore Hover] Unset Active Area'
+  '[Grid - Cursore Hover] Unset Active Area'
+);
+
+export const toggleSelectedCellIdx = createAction(
+  '[Grid - User Click] Toggle Selected Cell Index',
+  props<{ payload: number }>()
 );

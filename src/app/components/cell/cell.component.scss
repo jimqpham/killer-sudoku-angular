@@ -13,18 +13,38 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 
   & svg {
     position: absolute;
     z-index: -1;
     width: var(--cell-size);
     height: var(--cell-size);
-    fill: #9caf88;
+    fill: #bccaae;
+
+    [class^="bridge"] {
+      opacity: 0.7;
+    }
   }
 
   &__active {
     svg {
-      fill: aqua;
+      fill: #9caf88;
+    }
+  }
+
+  &__hover {
+    .grid-cell {
+      transform: scale(1.1);
+      transform-origin: center;
+    }
+  }
+
+  &__selected {
+    .grid-cell {
+      transform: scale(1.1);
+      transform-origin: center;
+      fill: #8da277;
     }
   }
 

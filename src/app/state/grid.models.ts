@@ -5,6 +5,7 @@ export type GridState = {
   solution: Digit[];
   areas: string[];
   activeArea?: string;
+  selectedCellIdx?: number;
 };
 
 export type AppState = {
