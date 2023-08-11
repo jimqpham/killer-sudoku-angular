@@ -7,9 +7,11 @@ import {
 import {
   BehaviorSubject,
   Observable,
+  ReplaySubject,
   Subject,
   combineLatest,
   distinctUntilChanged,
+  filter,
   map,
   switchMap,
   takeUntil,
@@ -24,6 +26,7 @@ import {
   selectAreaIdForCellIdx,
   selectActiveAreaId,
   selectSelectedCellIdx,
+  selectEnteredValueForCellIdx,
 } from 'src/app/state/grid.selectors';
 import { CellBridges } from 'src/app/types/types';
 import {
@@ -34,9 +37,11 @@ import {
 } from 'src/app/utils/config';
 import {
   setActiveArea,
+  setEnteredValue,
   toggleSelectedCellIdx,
   unsetActiveArea,
 } from 'src/app/state/grid.actions';
+import { Digit } from 'src/app/state/grid.models';
 
 @Component({
   selector: 'app-cell',
@@ -53,12 +58,15 @@ export class CellComponent implements OnDestroy {
   }
 
   solution$: Observable<number>;
+  enteredValue$: Observable<number | undefined>;
   bridges$: Observable<CellBridges>;
   displayAreaSum$: Observable<number | undefined>;
   areaId$: Observable<string>;
   isMouseOverSubject$ = new BehaviorSubject(false);
   isMouseOver$ = this.isMouseOverSubject$.asObservable();
   mouseClickSubject$ = new Subject<void>();
+  keyPressSubject$ = new ReplaySubject<string>();
+  keyPress$ = this.keyPressSubject$.asObservable();
   isSelected$: Observable<boolean>;
   isActiveArea$: Observable<boolean>;
   destroy$ = new Subject<void>();
@@ -71,6 +79,11 @@ export class CellComponent implements OnDestroy {
   constructor(private readonly _store: Store) {
     this.solution$ = this.cellIdx$.pipe(
       switchMap((cellIdx) => _store.select(selectSolutionForCellIdx(cellIdx)))
+    );
+    this.enteredValue$ = this.cellIdx$.pipe(
+      switchMap((cellIdx) =>
+        _store.select(selectEnteredValueForCellIdx(cellIdx))
+      )
     );
     this.bridges$ = this.cellIdx$.pipe(
       switchMap((cellIdx) => _store.select(selectBridgesForCellIdx(cellIdx)))
@@ -113,6 +126,16 @@ export class CellComponent implements OnDestroy {
             })
           )
         )
+      )
+      .subscribe();
+    this.keyPress$
+      .pipe(
+        takeUntil(this.destroy$),
+        filter((key) => key.length === 1 && key >= '1' && key <= '9'),
+        map((key) => +key as Digit),
+        tap((enteredDigit) => {
+          _store.dispatch(setEnteredValue({ payload: enteredDigit }));
+        })
       )
       .subscribe();
   }

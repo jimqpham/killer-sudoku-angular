@@ -8,6 +8,8 @@
   (mouseenter)="isMouseOverSubject$.next(true)"
   (mouseleave)="isMouseOverSubject$.next(false)"
   (click)="mouseClickSubject$.next()"
+  (keypress)="keyPressSubject$.next($event.key)"
+  tabindex="0"
 >
   <svg>
     <!-- Top bridge -->
@@ -62,5 +64,5 @@
   <div class="area-sum" *ngIf="displayAreaSum$ | async as areaSum">
     {{ areaSum }}
   </div>
-  <div class="cell-value">{{ solution$ | async }}</div>
+  <div class="cell-value">{{ enteredValue$ | async }}</div>
 </div>

@@ -30,3 +30,8 @@ export const toggleSelectedCellIdx = createAction(
   '[Grid - User Click] Toggle Selected Cell Index',
   props<{ payload: number }>()
 );
+
+export const setEnteredValue = createAction(
+  '[Grid - User Key Press] Set Entered Value',
+  props<{ payload: Digit }>()
+);

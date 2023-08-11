@@ -5,3 +5,12 @@
   --cell-padding: 10px;
   --cell-size: calc(var(--inner-cell-size) + 2 * var(--cell-padding));
 }
+
+.app-root {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}

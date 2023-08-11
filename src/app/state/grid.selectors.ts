@@ -9,6 +9,11 @@ const selectSolutionMemoized = createSelector(
   (grid) => grid.solution
 );
 
+const selectEnteredValuesMemoized = createSelector(
+  selectGrid,
+  (grid) => grid.enteredValue
+);
+
 const selectAreasMemoized = createSelector(selectGrid, (grid) => grid.areas);
 
 const selectActiveAreaIdMemoized = createSelector(
@@ -28,6 +33,12 @@ export const selectActiveAreaId = createSelector(
 
 export const selectSolutionForCellIdx = (cellIdx: number) =>
   createSelector(selectSolutionMemoized, (solution) => solution[cellIdx] || 0);
+
+export const selectEnteredValueForCellIdx = (cellIdx: number) =>
+  createSelector(
+    selectEnteredValuesMemoized,
+    (enteredValues) => enteredValues[cellIdx]
+  );
 
 export const selectAreaIdForCellIdx = (cellIdx: number) =>
   createSelector(selectAreasMemoized, (area) => area[cellIdx] || '');

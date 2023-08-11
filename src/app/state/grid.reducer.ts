@@ -3,6 +3,7 @@ import { immerOn } from 'ngrx-immer/store';
 import {
   PageLoadActions,
   setActiveArea,
+  setEnteredValue,
   toggleSelectedCellIdx,
   unsetActiveArea,
 } from './grid.actions';
@@ -12,6 +13,7 @@ const initialGridState: GridState = {
   solution: [] as Digit[],
   areas: [] as string[],
   activeArea: undefined,
+  enteredValue: [],
 };
 
 export const gridReducer = createReducer(
@@ -30,5 +32,9 @@ export const gridReducer = createReducer(
     if (state.selectedCellIdx === action.payload)
       state.selectedCellIdx = undefined;
     else state.selectedCellIdx = action.payload;
+  }),
+  immerOn(setEnteredValue, (state, action) => {
+    if (state.selectedCellIdx !== undefined)
+      state.enteredValue[state.selectedCellIdx] = action.payload;
   })
 );
