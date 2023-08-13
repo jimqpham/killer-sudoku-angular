@@ -86,18 +86,6 @@ export class CellComponent implements OnInit, OnDestroy {
     this.isSelected$ = this._store
       .select(selectSelectedCellIdx)
       .pipe(map((selectedCellIdx) => this.cellIdx === selectedCellIdx));
-    this.isMouseOverSubject$
-      .asObservable()
-      .pipe(
-        takeUntil(this.destroy$),
-        distinctUntilChanged(),
-        withLatestFrom(this.areaId$)
-      )
-      .subscribe(([isMouseOver, areaId]) => {
-        if (isMouseOver) {
-          this._store.dispatch(setActiveArea({ payload: areaId }));
-        } else this._store.dispatch(unsetActiveArea());
-      });
     this.isActiveArea$ = combineLatest([
       this.areaId$,
       this._store.select(selectActiveAreaId),
@@ -123,6 +111,19 @@ export class CellComponent implements OnInit, OnDestroy {
         map((key) => +key as Digit),
         tap((enteredDigit) => {
           this._store.dispatch(setEnteredValue({ payload: enteredDigit }));
+        })
+      )
+      .subscribe();
+    this.isMouseOverSubject$
+      .asObservable()
+      .pipe(
+        takeUntil(this.destroy$),
+        distinctUntilChanged(),
+        withLatestFrom(this.areaId$),
+        tap(([isMouseOver, areaId]) => {
+          if (isMouseOver) {
+            this._store.dispatch(setActiveArea({ payload: areaId }));
+          } else this._store.dispatch(unsetActiveArea());
         })
       )
       .subscribe();
