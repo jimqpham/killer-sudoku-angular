@@ -27,25 +27,24 @@ describe('Grid Selectors', () => {
       const expectedSolutionValue = 3;
 
       // Act
-      const actualSolutionValue = selectSolutionForCellIdx(cellIdx)(appState);
+      const actualSolutionValue = selectSolutionForCellIdx[cellIdx](appState);
 
       // Assert
       expect(actualSolutionValue).toEqual(expectedSolutionValue);
     });
 
-    it('should return 0 if there is no solution value', () => {
+    it('should return undefined if there is no solution value', () => {
       // Arrange
       const appState = {
         grid: { solution: [1, 3, 5, 7] },
       } as AppState;
       const cellIdx = 10;
-      const expectedSolutionValue = 0;
 
       // Act
-      const actualSolutionValue = selectSolutionForCellIdx(cellIdx)(appState);
+      const actualSolutionValue = selectSolutionForCellIdx[cellIdx](appState);
 
       // Assert
-      expect(actualSolutionValue).toEqual(expectedSolutionValue);
+      expect(actualSolutionValue).toBeUndefined();
     });
   });
 
@@ -57,7 +56,7 @@ describe('Grid Selectors', () => {
       const expectedAreaId = 'b';
 
       // Act
-      const actualAreaId = selectAreaIdForCellIdx(cellIdx)(appState);
+      const actualAreaId = selectAreaIdForCellIdx[cellIdx](appState);
 
       // Arrange
       expect(actualAreaId).toEqual(expectedAreaId);
@@ -70,7 +69,7 @@ describe('Grid Selectors', () => {
       const expectedAreaId = '';
 
       // Act
-      const actualAreaId = selectAreaIdForCellIdx(cellIdx)(appState);
+      const actualAreaId = selectAreaIdForCellIdx[cellIdx](appState);
 
       // Arrange
       expect(actualAreaId).toEqual(expectedAreaId);
@@ -124,21 +123,16 @@ describe('Grid Selectors', () => {
       };
 
       // Act
-      const actualTopLeftBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.TOP_LEFT
-      )(appState);
-      const actualTopRightBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.TOP_RIGHT
-      )(appState);
-      const actualBottomLeftBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.BOTTOM_LEFT
-      )(appState);
-      const actualBottomRightBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.BOTTOM_RIGHT
-      )(appState);
-      const actualCenterBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.CENTER
-      )(appState);
+      const actualTopLeftBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.TOP_LEFT](appState);
+      const actualTopRightBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.TOP_RIGHT](appState);
+      const actualBottomLeftBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.BOTTOM_LEFT](appState);
+      const actualBottomRightBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.BOTTOM_RIGHT](appState);
+      const actualCenterBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.CENTER](appState);
 
       // Assert
       expect(actualTopLeftBridges).toEqual(expectedTopLeftCellBridges);
@@ -186,21 +180,16 @@ describe('Grid Selectors', () => {
       };
 
       // Act
-      const actualTopLeftBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.TOP_LEFT
-      )(appState);
-      const actualTopRightBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.TOP_RIGHT
-      )(appState);
-      const actualBottomLeftBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.BOTTOM_LEFT
-      )(appState);
-      const actualBottomRightBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.BOTTOM_RIGHT
-      )(appState);
-      const actualCenterBridges = selectBridgesForCellIdx(
-        SPECIAL_CELL_IDX.CENTER
-      )(appState);
+      const actualTopLeftBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.TOP_LEFT](appState);
+      const actualTopRightBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.TOP_RIGHT](appState);
+      const actualBottomLeftBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.BOTTOM_LEFT](appState);
+      const actualBottomRightBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.BOTTOM_RIGHT](appState);
+      const actualCenterBridges =
+        selectBridgesForCellIdx[SPECIAL_CELL_IDX.CENTER](appState);
 
       // Assert
       expect(actualTopLeftBridges).toEqual(expectedTopLeftCellBridges);
@@ -361,7 +350,7 @@ describe('Grid Selectors', () => {
         const expectedAreaSum = 27; // the row has 9 cells, of each of which the value is 3
 
         // Act
-        const actualAreaSum = selectAreaSumAtCellIdx(cellIdx)(appState);
+        const actualAreaSum = selectAreaSumAtCellIdx[cellIdx](appState);
 
         // Assert
         expect(actualAreaSum).toEqual(expectedAreaSum);
@@ -371,7 +360,7 @@ describe('Grid Selectors', () => {
         const cellIdx = 12; // the 2nd cell of row 2, so NOT the top left cell of that area
 
         // Act
-        const actualAreaSum = selectAreaSumAtCellIdx(cellIdx)(appState);
+        const actualAreaSum = selectAreaSumAtCellIdx[cellIdx](appState);
 
         // Assert
         expect(actualAreaSum).toBeUndefined();

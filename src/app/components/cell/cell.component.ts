@@ -57,7 +57,7 @@ export class CellComponent implements OnDestroy {
     this.cellIdxSubject$.next(idx);
   }
 
-  solution$: Observable<number>;
+  solution$: Observable<Digit | undefined>;
   enteredValue$: Observable<number | undefined>;
   bridges$: Observable<CellBridges>;
   displayAreaSum$: Observable<number | undefined>;
@@ -78,21 +78,21 @@ export class CellComponent implements OnDestroy {
 
   constructor(private readonly _store: Store) {
     this.solution$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectSolutionForCellIdx(cellIdx)))
+      switchMap((cellIdx) => _store.select(selectSolutionForCellIdx[cellIdx]))
     );
     this.enteredValue$ = this.cellIdx$.pipe(
       switchMap((cellIdx) =>
-        _store.select(selectEnteredValueForCellIdx(cellIdx))
+        _store.select(selectEnteredValueForCellIdx[cellIdx])
       )
     );
     this.bridges$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectBridgesForCellIdx(cellIdx)))
+      switchMap((cellIdx) => _store.select(selectBridgesForCellIdx[cellIdx]))
     );
     this.displayAreaSum$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectAreaSumAtCellIdx(cellIdx)))
+      switchMap((cellIdx) => _store.select(selectAreaSumAtCellIdx[cellIdx]))
     );
     this.areaId$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectAreaIdForCellIdx(cellIdx)))
+      switchMap((cellIdx) => _store.select(selectAreaIdForCellIdx[cellIdx]))
     );
     this.isMouseOverSubject$
       .asObservable()

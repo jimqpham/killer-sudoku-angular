@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { GridState } from './grid.models';
+import { Digit, GridState } from './grid.models';
 import { AreaProps, CellBridges } from '../types/types';
 
 const selectGrid = createFeatureSelector<GridState>('grid');
@@ -31,40 +31,55 @@ export const selectActiveAreaId = createSelector(
   (activeArea) => activeArea
 );
 
-export const selectSolutionForCellIdx = (cellIdx: number) =>
-  createSelector(selectSolutionMemoized, (solution) => solution[cellIdx] || 0);
-
-export const selectEnteredValueForCellIdx = (cellIdx: number) =>
-  createSelector(
-    selectEnteredValuesMemoized,
-    (enteredValues) => enteredValues[cellIdx]
+export const selectSolutionForCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx: number) =>
+    createSelector(
+      selectSolutionMemoized,
+      (solution) => solution[cellIdx] as Digit | undefined
+    )
   );
 
-export const selectAreaIdForCellIdx = (cellIdx: number) =>
-  createSelector(selectAreasMemoized, (area) => area[cellIdx] || '');
+export const selectEnteredValueForCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx) =>
+    createSelector(
+      selectEnteredValuesMemoized,
+      (enteredValues) => enteredValues[cellIdx]
+    )
+  );
 
-export const selectBridgesForCellIdx = (cellIdx: number) =>
-  createSelector(selectAreasMemoized, function (areas): CellBridges {
-    const cellAboveIdx = cellIdx - 9 >= 0 ? cellIdx - 9 : undefined;
-    const cellBelowIdx = cellIdx + 9 <= 80 ? cellIdx + 9 : undefined;
-    const cellLeftIdx = cellIdx % 9 === 0 ? undefined : cellIdx - 1;
-    const cellRightIdx = cellIdx % 9 === 8 ? undefined : cellIdx + 1;
+export const selectAreaIdForCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx) =>
+    createSelector(selectAreasMemoized, (area) => area[cellIdx] || '')
+  );
 
-    return {
-      up: Boolean(
-        cellAboveIdx !== undefined && areas[cellAboveIdx] === areas[cellIdx]
-      ),
-      down: Boolean(
-        cellBelowIdx !== undefined && areas[cellBelowIdx] === areas[cellIdx]
-      ),
-      left: Boolean(
-        cellLeftIdx !== undefined && areas[cellLeftIdx] === areas[cellIdx]
-      ),
-      right: Boolean(
-        cellRightIdx !== undefined && areas[cellRightIdx] === areas[cellIdx]
-      ),
-    };
-  });
+export const selectBridgesForCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx) =>
+    createSelector(selectAreasMemoized, function (areas): CellBridges {
+      const cellAboveIdx = cellIdx - 9 >= 0 ? cellIdx - 9 : undefined;
+      const cellBelowIdx = cellIdx + 9 <= 80 ? cellIdx + 9 : undefined;
+      const cellLeftIdx = cellIdx % 9 === 0 ? undefined : cellIdx - 1;
+      const cellRightIdx = cellIdx % 9 === 8 ? undefined : cellIdx + 1;
+
+      return {
+        up: Boolean(
+          cellAboveIdx !== undefined && areas[cellAboveIdx] === areas[cellIdx]
+        ),
+        down: Boolean(
+          cellBelowIdx !== undefined && areas[cellBelowIdx] === areas[cellIdx]
+        ),
+        left: Boolean(
+          cellLeftIdx !== undefined && areas[cellLeftIdx] === areas[cellIdx]
+        ),
+        right: Boolean(
+          cellRightIdx !== undefined && areas[cellRightIdx] === areas[cellIdx]
+        ),
+      };
+    })
+  );
 
 export const selectAreaProps = createSelector(
   selectAreasMemoized,
@@ -95,16 +110,19 @@ export const selectAreaProps = createSelector(
   }
 );
 
-export const selectAreaSumAtCellIdx = (cellIdx: number) =>
-  createSelector(
-    selectAreasMemoized,
-    selectAreaProps,
-    (areas, areaPropsList) =>
-      areaPropsList.find(
-        (areaProps) =>
-          areaProps.areaId === areas[cellIdx] &&
-          areaProps.topLeftCellIdx === cellIdx
-      )?.sum
+export const selectAreaSumAtCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx) =>
+    createSelector(
+      selectAreasMemoized,
+      selectAreaProps,
+      (areas, areaPropsList) =>
+        areaPropsList.find(
+          (areaProps) =>
+            areaProps.areaId === areas[cellIdx] &&
+            areaProps.topLeftCellIdx === cellIdx
+        )?.sum
+    )
   );
 
 export const selectSelectedCellIdx = createSelector(
