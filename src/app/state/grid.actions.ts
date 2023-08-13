@@ -23,7 +23,7 @@ export const setActiveArea = createAction(
 );
 
 export const unsetActiveArea = createAction(
-  '[Grid - Cursore Hover] Unset Active Area'
+  '[Grid - Cursor Hover] Unset Active Area'
 );
 
 export const toggleSelectedCellIdx = createAction(

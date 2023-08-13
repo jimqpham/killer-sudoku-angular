@@ -6,6 +6,9 @@ import {
   selectBridgesForCellIdx,
   selectAreaSumAtCellIdx,
   selectSolutionForCellIdx,
+  selectActiveAreaId,
+  selectSelectedCellIdx,
+  selectEnteredValueForCellIdx,
 } from './grid.selectors';
 
 const SPECIAL_CELL_IDX = {
@@ -45,6 +48,34 @@ describe('Grid Selectors', () => {
 
       // Assert
       expect(actualSolutionValue).toBeUndefined();
+    });
+  });
+
+  describe('selectActiveAreaId', () => {
+    it('should return the current active area id', () => {
+      // Arrange
+      const activeAreaId = 'ACTIVE';
+      const appState = { grid: { activeArea: activeAreaId } } as AppState;
+
+      expect(selectActiveAreaId(appState)).toEqual(activeAreaId);
+    });
+  });
+
+  describe('selectSelectedCellIdx', () => {
+    it('should return the current selected cell index', () => {
+      // Arrange
+      const selectedCellIdx = 10;
+      const appState = { grid: { selectedCellIdx } } as AppState;
+
+      expect(selectSelectedCellIdx(appState)).toEqual(selectedCellIdx);
+    });
+  });
+
+  describe('selectEnteredValueForCellIdx', () => {
+    it('should return the entered value for the cell index', () => {
+      const appState = { grid: { enteredValue: [2, 3, 4, 5] } } as AppState;
+
+      expect(selectEnteredValueForCellIdx[3](appState)).toEqual(5);
     });
   });
 

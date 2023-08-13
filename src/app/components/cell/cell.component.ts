@@ -3,9 +3,9 @@ import {
   Component,
   Input,
   OnDestroy,
+  OnInit,
 } from '@angular/core';
 import {
-  BehaviorSubject,
   Observable,
   ReplaySubject,
   Subject,
@@ -13,7 +13,6 @@ import {
   distinctUntilChanged,
   filter,
   map,
-  switchMap,
   takeUntil,
   tap,
   withLatestFrom,
@@ -49,26 +48,22 @@ import { Digit } from 'src/app/state/grid.models';
   styleUrls: ['./cell.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CellComponent implements OnDestroy {
-  cellIdxSubject$ = new BehaviorSubject<number>(0);
-  cellIdx$ = this.cellIdxSubject$.asObservable().pipe(distinctUntilChanged());
+export class CellComponent implements OnInit, OnDestroy {
   @Input()
-  set cellIdx(idx: number) {
-    this.cellIdxSubject$.next(idx);
-  }
+  cellIdx!: number;
 
-  solution$: Observable<Digit | undefined>;
-  enteredValue$: Observable<number | undefined>;
-  bridges$: Observable<CellBridges>;
-  displayAreaSum$: Observable<number | undefined>;
-  areaId$: Observable<string>;
-  isMouseOverSubject$ = new BehaviorSubject(false);
+  solution$?: Observable<Digit | undefined>;
+  enteredValue$?: Observable<number | undefined>;
+  bridges$?: Observable<CellBridges>;
+  displayAreaSum$?: Observable<number | undefined>;
+  areaId$?: Observable<string>;
+  isMouseOverSubject$ = new ReplaySubject<boolean>();
   isMouseOver$ = this.isMouseOverSubject$.asObservable();
   mouseClickSubject$ = new Subject<void>();
   keyPressSubject$ = new ReplaySubject<string>();
   keyPress$ = this.keyPressSubject$.asObservable();
-  isSelected$: Observable<boolean>;
-  isActiveArea$: Observable<boolean>;
+  isSelected$?: Observable<boolean>;
+  isActiveArea$?: Observable<boolean>;
   destroy$ = new Subject<void>();
 
   innerCellSize = INNER_CELL_SIZE;
@@ -76,24 +71,21 @@ export class CellComponent implements OnDestroy {
   bridgeWidth = BRIDGE_WIDTH;
   cellSize = CELL_SIZE;
 
-  constructor(private readonly _store: Store) {
-    this.solution$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectSolutionForCellIdx[cellIdx]))
+  constructor(private readonly _store: Store) {}
+
+  ngOnInit() {
+    this.solution$ = this._store.select(selectSolutionForCellIdx[this.cellIdx]);
+    this.enteredValue$ = this._store.select(
+      selectEnteredValueForCellIdx[this.cellIdx]
     );
-    this.enteredValue$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) =>
-        _store.select(selectEnteredValueForCellIdx[cellIdx])
-      )
+    this.bridges$ = this._store.select(selectBridgesForCellIdx[this.cellIdx]);
+    this.displayAreaSum$ = this._store.select(
+      selectAreaSumAtCellIdx[this.cellIdx]
     );
-    this.bridges$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectBridgesForCellIdx[cellIdx]))
-    );
-    this.displayAreaSum$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectAreaSumAtCellIdx[cellIdx]))
-    );
-    this.areaId$ = this.cellIdx$.pipe(
-      switchMap((cellIdx) => _store.select(selectAreaIdForCellIdx[cellIdx]))
-    );
+    this.areaId$ = this._store.select(selectAreaIdForCellIdx[this.cellIdx]);
+    this.isSelected$ = this._store
+      .select(selectSelectedCellIdx)
+      .pipe(map((selectedCellIdx) => this.cellIdx === selectedCellIdx));
     this.isMouseOverSubject$
       .asObservable()
       .pipe(
@@ -102,30 +94,26 @@ export class CellComponent implements OnDestroy {
         withLatestFrom(this.areaId$)
       )
       .subscribe(([isMouseOver, areaId]) => {
-        if (isMouseOver) _store.dispatch(setActiveArea({ payload: areaId }));
-        else _store.dispatch(unsetActiveArea());
+        if (isMouseOver) {
+          this._store.dispatch(setActiveArea({ payload: areaId }));
+        } else this._store.dispatch(unsetActiveArea());
       });
     this.isActiveArea$ = combineLatest([
       this.areaId$,
-      _store.select(selectActiveAreaId),
+      this._store.select(selectActiveAreaId),
     ]).pipe(
       map(([currentAreaId, activeAreaId]) => currentAreaId === activeAreaId)
     );
-    this.isSelected$ = combineLatest([
-      this.cellIdx$,
-      _store.select(selectSelectedCellIdx),
-    ]).pipe(map(([cellIdx, selectedCellIdx]) => cellIdx === selectedCellIdx));
+
     this.mouseClickSubject$
       .asObservable()
       .pipe(
         takeUntil(this.destroy$),
-        switchMap(() =>
-          this.cellIdx$.pipe(
-            tap((cellIdx) => {
-              _store.dispatch(toggleSelectedCellIdx({ payload: cellIdx }));
-            })
-          )
-        )
+        tap(() => {
+          this._store.dispatch(
+            toggleSelectedCellIdx({ payload: this.cellIdx })
+          );
+        })
       )
       .subscribe();
     this.keyPress$
@@ -134,7 +122,7 @@ export class CellComponent implements OnDestroy {
         filter((key) => key.length === 1 && key >= '1' && key <= '9'),
         map((key) => +key as Digit),
         tap((enteredDigit) => {
-          _store.dispatch(setEnteredValue({ payload: enteredDigit }));
+          this._store.dispatch(setEnteredValue({ payload: enteredDigit }));
         })
       )
       .subscribe();
