@@ -10,9 +10,11 @@ import {
   ReplaySubject,
   Subject,
   combineLatest,
+  delay,
   distinctUntilChanged,
   filter,
   map,
+  take,
   takeUntil,
   tap,
   withLatestFrom,
@@ -26,6 +28,9 @@ import {
   selectActiveAreaId,
   selectSelectedCellIdx,
   selectEnteredValueForCellIdx,
+  selectIsCorrectAnswerForCellIdx,
+  selectIsUnansweredForCellIdx,
+  selectIsWrongAnswerForCellIdx,
 } from 'src/app/state/grid.selectors';
 import { CellBridges } from 'src/app/types/types';
 import {
@@ -35,9 +40,11 @@ import {
   INNER_CELL_SIZE,
 } from 'src/app/utils/config';
 import {
+  resetEnteredValueWrongAnswer,
+  resetSelectedCellIdxCorrectAnswer,
   setActiveArea,
   setEnteredValue,
-  toggleSelectedCellIdx,
+  clickCellIdx,
   unsetActiveArea,
 } from 'src/app/state/grid.actions';
 import { Digit } from 'src/app/state/grid.models';
@@ -58,12 +65,15 @@ export class CellComponent implements OnInit, OnDestroy {
   displayAreaSum$?: Observable<number | undefined>;
   areaId$?: Observable<string>;
   isMouseOverSubject$ = new ReplaySubject<boolean>();
-  isMouseOver$ = this.isMouseOverSubject$.asObservable();
+  isZoomingIn$?: Observable<boolean>;
   mouseClickSubject$ = new Subject<void>();
   keyPressSubject$ = new ReplaySubject<string>();
   keyPress$ = this.keyPressSubject$.asObservable();
   isSelected$?: Observable<boolean>;
   isActiveArea$?: Observable<boolean>;
+  isCorrectAnswer$?: Observable<boolean>;
+  isWrongAnswer$?: Observable<boolean>;
+  isUnanswered$?: Observable<boolean>;
   destroy$ = new Subject<void>();
 
   innerCellSize = INNER_CELL_SIZE;
@@ -92,25 +102,45 @@ export class CellComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([currentAreaId, activeAreaId]) => currentAreaId === activeAreaId)
     );
+    this.isCorrectAnswer$ = this._store.select(
+      selectIsCorrectAnswerForCellIdx[this.cellIdx]
+    );
+    this.isWrongAnswer$ = this._store.select(
+      selectIsWrongAnswerForCellIdx[this.cellIdx]
+    );
+    this.isUnanswered$ = this._store.select(
+      selectIsUnansweredForCellIdx[this.cellIdx]
+    );
+    this.isZoomingIn$ = combineLatest([
+      this.isMouseOverSubject$.asObservable(),
+      this.isUnanswered$,
+    ]).pipe(
+      map(([isMouseOver, isUnanswered]) => (isUnanswered ? isMouseOver : false))
+    );
 
     this.mouseClickSubject$
       .asObservable()
       .pipe(
         takeUntil(this.destroy$),
+        withLatestFrom(this.isUnanswered$),
+        filter(([_, isUnanswered]) => isUnanswered === true),
         tap(() => {
-          this._store.dispatch(
-            toggleSelectedCellIdx({ payload: this.cellIdx })
-          );
+          this._store.dispatch(clickCellIdx({ payload: this.cellIdx }));
         })
       )
       .subscribe();
     this.keyPress$
       .pipe(
         takeUntil(this.destroy$),
+        distinctUntilChanged(),
         filter((key) => key.length === 1 && key >= '1' && key <= '9'),
         map((key) => +key as Digit),
         tap((enteredDigit) => {
-          this._store.dispatch(setEnteredValue({ payload: enteredDigit }));
+          this._store.dispatch(
+            setEnteredValue({
+              payload: enteredDigit,
+            })
+          );
         })
       )
       .subscribe();
@@ -124,6 +154,28 @@ export class CellComponent implements OnInit, OnDestroy {
           if (isMouseOver) {
             this._store.dispatch(setActiveArea({ payload: areaId }));
           } else this._store.dispatch(unsetActiveArea());
+        })
+      )
+      .subscribe();
+    this.isWrongAnswer$
+      .pipe(
+        filter((isWrongAnswer) => isWrongAnswer === true),
+        delay(600),
+        tap(() => {
+          this._store.dispatch(
+            resetEnteredValueWrongAnswer({
+              payload: this.cellIdx,
+            })
+          );
+        })
+      )
+      .subscribe();
+    this.isCorrectAnswer$
+      .pipe(
+        filter((isCorrectAnswer) => isCorrectAnswer === true),
+        take(1),
+        tap(() => {
+          this._store.dispatch(resetSelectedCellIdxCorrectAnswer());
         })
       )
       .subscribe();

@@ -2,18 +2,19 @@ import { createReducer } from '@ngrx/store';
 import { immerOn } from 'ngrx-immer/store';
 import {
   PageLoadActions,
+  resetEnteredValueWrongAnswer,
   setActiveArea,
   setEnteredValue,
-  toggleSelectedCellIdx,
+  clickCellIdx,
   unsetActiveArea,
+  resetSelectedCellIdxCorrectAnswer,
 } from './grid.actions';
-import { Digit, GridState } from './grid.models';
+import { GridState } from './grid.models';
 
 const initialGridState: GridState = {
-  solution: [] as Digit[],
-  areas: [] as string[],
-  activeArea: undefined,
-  enteredValue: [],
+  solution: Array(81).fill(undefined),
+  areas: Array(81).fill(undefined),
+  enteredValue: Array(81).fill(undefined),
 };
 
 export const gridReducer = createReducer(
@@ -28,7 +29,7 @@ export const gridReducer = createReducer(
   immerOn(unsetActiveArea, (state) => {
     state.activeArea = undefined;
   }),
-  immerOn(toggleSelectedCellIdx, (state, action) => {
+  immerOn(clickCellIdx, (state, action) => {
     if (state.selectedCellIdx === action.payload)
       state.selectedCellIdx = undefined;
     else state.selectedCellIdx = action.payload;
@@ -36,5 +37,11 @@ export const gridReducer = createReducer(
   immerOn(setEnteredValue, (state, action) => {
     if (state.selectedCellIdx !== undefined)
       state.enteredValue[state.selectedCellIdx] = action.payload;
+  }),
+  immerOn(resetEnteredValueWrongAnswer, (state, action) => {
+    state.enteredValue[action.payload] = undefined;
+  }),
+  immerOn(resetSelectedCellIdxCorrectAnswer, (state) => {
+    state.selectedCellIdx = undefined;
   })
 );

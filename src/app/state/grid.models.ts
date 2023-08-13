@@ -4,7 +4,7 @@ export type OptionalDigit = Digit | undefined;
 export type GridState = {
   solution: Digit[];
   areas: string[];
-  enteredValue: Digit[];
+  enteredValue: (Digit | undefined)[];
   activeArea?: string;
   selectedCellIdx?: number;
 };

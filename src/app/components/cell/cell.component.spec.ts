@@ -1,17 +1,27 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import { CellComponent } from './cell.component';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import {
   selectActiveAreaId,
   selectAreaIdForCellIdx,
+  selectIsCorrectAnswerForCellIdx,
+  selectIsUnansweredForCellIdx,
+  selectIsWrongAnswerForCellIdx,
   selectSelectedCellIdx,
 } from 'src/app/state/grid.selectors';
 import { By } from '@angular/platform-browser';
 import {
   setActiveArea,
   setEnteredValue,
-  toggleSelectedCellIdx,
+  clickCellIdx,
   unsetActiveArea,
+  resetEnteredValueWrongAnswer,
+  resetSelectedCellIdxCorrectAnswer,
 } from 'src/app/state/grid.actions';
 
 describe('CellComponent', () => {
@@ -39,6 +49,18 @@ describe('CellComponent', () => {
               selector: selectActiveAreaId,
               value: AREA_ID,
             },
+            {
+              selector: selectIsUnansweredForCellIdx[CELL_IDX],
+              value: true,
+            },
+            {
+              selector: selectIsWrongAnswerForCellIdx[CELL_IDX],
+              value: false,
+            },
+            {
+              selector: selectIsCorrectAnswerForCellIdx[CELL_IDX],
+              value: false,
+            },
           ],
         }),
       ],
@@ -48,6 +70,7 @@ describe('CellComponent', () => {
     store = TestBed.inject(MockStore);
     component = fixture.componentInstance;
     component.cellIdx = CELL_IDX;
+    spyOn(store, 'dispatch');
     fixture.detectChanges();
   });
 
@@ -68,21 +91,17 @@ describe('CellComponent', () => {
   });
 
   it('should toggle the selected status on click', () => {
-    const selectedCell = fixture.debugElement.query(
-      By.css('.cell-container__selected')
-    );
-    spyOn(store, 'dispatch');
+    const selectedCell = fixture.debugElement.query(By.css('.cell-container'));
 
     selectedCell.triggerEventHandler('click');
 
     expect(store.dispatch).toHaveBeenCalledOnceWith(
-      toggleSelectedCellIdx({ payload: CELL_IDX })
+      clickCellIdx({ payload: CELL_IDX })
     );
   });
 
   it('should dispatch setActiveArea action when the user hovers the mouse over the cell', () => {
     // Act
-    spyOn(store, 'dispatch');
     fixture.debugElement
       .query(By.css('.cell-container'))
       .triggerEventHandler('mouseenter');
@@ -95,7 +114,6 @@ describe('CellComponent', () => {
 
   it('should dispatch unsetActive action when the cursor exits the cell', () => {
     // Act
-    spyOn(store, 'dispatch');
     fixture.debugElement
       .query(By.css('.cell-container'))
       .triggerEventHandler('mouseleave');
@@ -125,7 +143,6 @@ describe('CellComponent', () => {
   });
 
   it('should register entered value if the user enters a digit', () => {
-    spyOn(store, 'dispatch');
     const selectedCell = fixture.debugElement.query(
       By.css('.cell-container__active')
     );
@@ -141,7 +158,6 @@ describe('CellComponent', () => {
   });
 
   it('should NOT register entered value if the user enters a non-digit', () => {
-    spyOn(store, 'dispatch');
     const selectedCell = fixture.debugElement.query(
       By.css('.cell-container__active')
     );
@@ -152,5 +168,56 @@ describe('CellComponent', () => {
     );
 
     expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should wait and reset the answer if it is incorrect', fakeAsync(() => {
+    store.overrideSelector(selectIsWrongAnswerForCellIdx[CELL_IDX], true);
+    store.refreshState();
+    tick(600);
+
+    expect(store.dispatch).toHaveBeenCalledOnceWith(
+      resetEnteredValueWrongAnswer({ payload: CELL_IDX })
+    );
+  }));
+
+  it('should reset the selected cell index after a correct answer', () => {
+    store.overrideSelector(selectIsCorrectAnswerForCellIdx[CELL_IDX], true);
+    store.refreshState();
+
+    expect(store.dispatch).toHaveBeenCalledOnceWith(
+      resetSelectedCellIdxCorrectAnswer()
+    );
+  });
+
+  it('should zoom in on hover if the correct value has not been entered', () => {
+    // Arrange
+    const cellContainer = fixture.debugElement.query(By.css('.cell-container'));
+    cellContainer.triggerEventHandler('mouseenter');
+
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    const zoomableCell = fixture.debugElement.query(
+      By.css('.cell-container__zoom-in')
+    );
+    expect(zoomableCell).toBeTruthy();
+  });
+
+  it('should NOT zoom in on hover if the correct value has been entered', () => {
+    // Arrange
+    store.overrideSelector(selectIsUnansweredForCellIdx[CELL_IDX], false);
+    store.refreshState();
+    const cellContainer = fixture.debugElement.query(By.css('.cell-container'));
+    cellContainer.triggerEventHandler('mouseenter');
+
+    // Act
+    fixture.detectChanges();
+
+    // Assert
+    const zoomableCell = fixture.debugElement.query(
+      By.css('.cell-container__zoom-in')
+    );
+    expect(zoomableCell).toBeFalsy();
   });
 });

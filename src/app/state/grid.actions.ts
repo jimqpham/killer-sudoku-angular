@@ -26,12 +26,21 @@ export const unsetActiveArea = createAction(
   '[Grid - Cursor Hover] Unset Active Area'
 );
 
-export const toggleSelectedCellIdx = createAction(
-  '[Grid - User Click] Toggle Selected Cell Index',
+export const clickCellIdx = createAction(
+  '[Grid - User Click] Click Cell Index',
   props<{ payload: number }>()
+);
+
+export const resetSelectedCellIdxCorrectAnswer = createAction(
+  '[Grid - Correct Answer] Reset Selected Cell Index'
 );
 
 export const setEnteredValue = createAction(
   '[Grid - User Key Press] Set Entered Value',
   props<{ payload: Digit }>()
+);
+
+export const resetEnteredValueWrongAnswer = createAction(
+  '[Grid - Wrong Answer Resetting] Reset Entered Value',
+  props<{ payload: number }>()
 );

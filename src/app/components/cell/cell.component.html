@@ -2,8 +2,10 @@
   [ngClass]="{
     'cell-container': true,
     'cell-container__active': isActiveArea$ | async,
-    'cell-container__hover': isMouseOver$ | async,
+    'cell-container__zoom-in': isZoomingIn$ | async,
     'cell-container__selected': isSelected$ | async,
+    'cell-container__wrong-answer': (isWrongAnswer$ | async),
+    'cell-container__correct-answer': (isCorrectAnswer$ | async)
   }"
   (mouseenter)="isMouseOverSubject$.next(true)"
   (mouseleave)="isMouseOverSubject$.next(false)"

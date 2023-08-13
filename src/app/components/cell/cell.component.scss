@@ -15,6 +15,10 @@
   align-items: center;
   cursor: pointer;
 
+  & .cell-value {
+    color: rgb(74, 77, 80);
+  }
+
   & svg {
     position: absolute;
     z-index: -1;
@@ -33,7 +37,7 @@
     }
   }
 
-  &__hover {
+  &__zoom-in {
     .grid-cell {
       transform: scale(1.1);
       transform-origin: center;
@@ -45,6 +49,53 @@
       transform: scale(1.1);
       transform-origin: center;
       fill: #778fa2;
+    }
+  }
+
+  &__wrong-answer {
+    .grid-cell {
+      transform: scale(1.1);
+      transform-origin: center;
+      fill: rgb(193, 146, 146);
+      animation: wiggle 0.2s 3;
+
+      @keyframes wiggle {
+        0% {
+          transform: rotate(0deg) scale(1.1);
+        }
+        33% {
+          transform: rotate(-10deg) scale(1.1);
+        }
+        67% {
+          transform: rotate(10deg) scale(1.1);
+        }
+        100% {
+          transform: rotate(0deg) scale(1.1);
+        }
+      }
+    }
+  }
+
+  &__correct-answer {
+    .grid-cell {
+      animation: zoom-in-out 0.5s 1;
+      fill: #aecab2;
+
+      @keyframes zoom-in-out {
+        0% {
+          fill: #778fa2;
+        }
+        30% {
+          transform: scale(1.2);
+          transform-origin: center;
+          fill: #aecab2;
+        }
+        100% {
+          transform: scale(1);
+          transform-origin: center;
+          fill: #aecab2;
+        }
+      }
     }
   }
 

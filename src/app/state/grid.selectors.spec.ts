@@ -1,5 +1,5 @@
 import { AreaProps } from '../types/types';
-import { AppState } from './grid.models';
+import { AppState, Digit } from './grid.models';
 import {
   selectAreaIdForCellIdx,
   selectAreaProps,
@@ -9,6 +9,9 @@ import {
   selectActiveAreaId,
   selectSelectedCellIdx,
   selectEnteredValueForCellIdx,
+  selectIsCorrectAnswerForCellIdx,
+  selectIsUnansweredForCellIdx,
+  selectIsWrongAnswerForCellIdx,
 } from './grid.selectors';
 
 const SPECIAL_CELL_IDX = {
@@ -396,6 +399,79 @@ describe('Grid Selectors', () => {
         // Assert
         expect(actualAreaSum).toBeUndefined();
       });
+    });
+  });
+
+  describe('selectIsCorrectAnswerForCellIdx', () => {
+    it('should return true if the entered value matches the solution', () => {
+      const appState = {
+        grid: {
+          enteredValue: [2],
+          solution: [2],
+        },
+      };
+
+      expect(selectIsCorrectAnswerForCellIdx[0](appState)).toBeTrue();
+    });
+
+    it('should return false if the entered value does not match the solution', () => {
+      const appState = {
+        grid: {
+          enteredValue: [2],
+          solution: [1],
+        },
+      };
+
+      expect(selectIsCorrectAnswerForCellIdx[0](appState)).toBeFalse();
+    });
+
+    it('should return false if the user has not entered a value', () => {
+      const appState = {
+        grid: {
+          enteredValue: [1],
+          solution: [2, 3],
+        },
+      } as AppState;
+
+      expect(selectIsCorrectAnswerForCellIdx[1](appState)).toBeFalse();
+    });
+  });
+
+  describe('selectIsUnansweredForCellIdx', () => {
+    it('should return true if the user has not entered a value for the cell and false otherwise', () => {
+      const appState = {
+        grid: {
+          enteredValue: [1, 2, 3],
+        },
+      } as AppState;
+
+      expect(selectIsUnansweredForCellIdx[2](appState)).toBeFalse();
+      expect(selectIsUnansweredForCellIdx[5](appState)).toBeTrue();
+    });
+  });
+
+  describe('selectIsWrongAnswerForCellIdx', () => {
+    it('should return true if the user has entered a wrong value and false otherwise', () => {
+      const appState = {
+        grid: {
+          enteredValue: [1, 2],
+          solution: [3, 2],
+        },
+      } as AppState;
+
+      expect(selectIsWrongAnswerForCellIdx[0](appState)).toBeTrue();
+      expect(selectIsWrongAnswerForCellIdx[1](appState)).toBeFalse();
+    });
+
+    it('should return false if the user has not entered a value', () => {
+      const appState = {
+        grid: {
+          enteredValue: [1],
+          solution: [3, 2],
+        },
+      } as AppState;
+
+      expect(selectIsWrongAnswerForCellIdx[1](appState)).toBeFalse();
     });
   });
 });

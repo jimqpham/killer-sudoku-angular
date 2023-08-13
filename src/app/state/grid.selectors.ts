@@ -43,9 +43,40 @@ export const selectSolutionForCellIdx = Array(81)
 export const selectEnteredValueForCellIdx = Array(81)
   .fill(null)
   .map((_, cellIdx) =>
+    createSelector(selectEnteredValuesMemoized, function (enteredValues):
+      | Digit
+      | undefined {
+      return enteredValues[cellIdx];
+    })
+  );
+
+export const selectIsCorrectAnswerForCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx) =>
     createSelector(
-      selectEnteredValuesMemoized,
-      (enteredValues) => enteredValues[cellIdx]
+      selectEnteredValueForCellIdx[cellIdx],
+      selectSolutionForCellIdx[cellIdx],
+      (enteredValue, solution) =>
+        enteredValue !== undefined && enteredValue === solution
+    )
+  );
+
+export const selectIsUnansweredForCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx) =>
+    createSelector(
+      selectEnteredValueForCellIdx[cellIdx],
+      (enteredValue) => enteredValue === undefined
+    )
+  );
+
+export const selectIsWrongAnswerForCellIdx = Array(81)
+  .fill(null)
+  .map((_, cellIdx) =>
+    createSelector(
+      selectIsCorrectAnswerForCellIdx[cellIdx],
+      selectIsUnansweredForCellIdx[cellIdx],
+      (isCorrect, isUnanswered) => !isUnanswered && !isCorrect
     )
   );
 
