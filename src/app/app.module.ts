@@ -19,7 +19,7 @@ import { CellComponent } from './components/cell/cell.component';
     AppRoutingModule,
     StoreModule.forRoot<AppState>({ grid: gridReducer }),
     EffectsModule.forRoot(GridEffects),
-    StoreDevtoolsModule,
+    StoreDevtoolsModule.instrument(),
   ],
   providers: [],
   bootstrap: [AppComponent],
